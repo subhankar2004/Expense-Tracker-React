@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import OverViewComponent from "./OverViewComponent";
 import TransactionsComponent from "./TransactionsComponent";
+import { BarChart } from '../../components/BarChart'
+import { PieChart } from "../../components/PieChart";
 
 const Container = styled.div`
   background-color: white;
@@ -38,6 +40,46 @@ const HomeComponent = (props) => {
         transactionArray.push(payload);
         updateTransaction(transactionArray);
     };
+
+    const labels = transactions?.filter((trns) => trns.type === "INCOME")?.map((trns) => trns["desc"]);
+
+    const incomeData = {
+        labels,
+        datasets: [
+            {
+                label: 'Amount',
+                data: transactions?.filter((trns) => trns.type === "INCOME")?.map((trns) => trns.amount),
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            }
+        ],
+    };
+
+    const expenseData = {
+        labels: transactions?.filter((trns) => trns.type === "EXPENSE")?.map((trns) => trns["desc"]),
+        datasets: [
+            {
+                label: 'Amount',
+                data: transactions?.filter((trns) => trns.type === "EXPENSE")?.map((trns) => trns.amount),
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)',
+                ],
+                borderWidth: 1,
+            },
+        ],
+    };
     return (
         <Container>
             <OverViewComponent
@@ -50,6 +92,9 @@ const HomeComponent = (props) => {
             ) : (
                 ""
             )}
+
+            <BarChart data={incomeData} />
+            <PieChart data={expenseData} />
         </Container>
     );
 };
